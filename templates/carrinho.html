@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Seu Carrinho - Obá Moda Afro{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    
+    {% if not cart_items %}
+    <div class="text-center">
+        <h1 class="section-title">Seu carrinho está vazio</h1>
+        <p class="lead my-4">Que tal dar uma olhada nos nossos produtos?</p>
+        <a href="{{ url_for('produtos') }}" class="btn btn-primary btn-lg">Ver Produtos</a>
+    </div>
+
+    {% else %}
+    <h1 class="section-title text-center mb-4">Seu Carrinho</h1>
+
+    <form action="{{ url_for('atualizar_carrinho') }}" method="POST">
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col" colspan="2">Produto</th>
+                        <th scope="col">Preço</th>
+                        <th scope="col">Quantidade</th>
+                        <th scope="col" class="text-end">Subtotal</th>
+                        <th scope="col" class="text-center">Remover</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr>
+                        <td style="width: 100px;">
+                            <a href="{{ url_for('produto_detalhe', slug=item.product.slug) }}">
+                                {% if item.product.image %}
+                                <img src="{{ url_for('static', filename='uploads/' + item.product.image) }}" alt="{{ item.product.name }}" class="img-fluid rounded">
+                                {% else %}
+                                <img src="https://via.placeholder.com/100x100?text=Sem+Imagem" alt="{{ item.product.name }}" class="img-fluid rounded">
+                                {% endif %}
+                            </a>
+                        </td>
+                        
+                        <td>
+                            <a href="{{ url_for('produto_detalhe', slug=item.product.slug) }}" class="text-dark text-decoration-none fw-bold">{{ item.product.name }}</a>
+                            <br>
+                            <small class="text-muted">Tamanho: {{ item.variation.size }}</small>
+                        </td>
+
+                        <!-- INÍCIO DA CORREÇÃO (LÓGICA DE PREÇO) -->
+                        <td>
+                            {% if item.product.is_on_sale %}
+                                <span class="d-block text-muted text-decoration-line-through" style="font-size: 0.9em;">
+                                    R$ {{ "%.2f"|format(item.product.price) }}
+                                </span>
+                                <span class="d-block fw-bold text-danger">
+                                    R$ {{ "%.2f"|format(item.product.current_price) }}
+                                </span>
+                            {% else %}
+                                <span class="d-block">
+                                    R$ {{ "%.2f"|format(item.product.current_price) }}
+                                </span>
+                            {% endif %} <!-- FIM DA CORREÇÃO (O 'endif' QUE FALTAVA) -->
+                        </td>
+                        <!-- FIM DA CORREÇÃO -->
+
+                        <td style="width: 120px;">
+                            <input type="number" 
+                                class="form-control" 
+                                name="{{ item.variation.id }}"  value="{{ item.quantity }}"      min="1" 
+                                max="{{ item.variation.stock }}" aria-label="Quantidade">
+                        </td>
+
+                        <td class="text-end fw-bold">R$ {{ "%.2f"|format(item.subtotal) }}</td> 
+                        
+                        <td class="text-center">
+                            <a href="{{ url_for('remover_do_carrinho', variation_id=item.variation.id) }}" class="btn btn-outline-danger btn-sm" title="Remover item">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div> <div class="row justify-content-end mt-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <h3 class="h5">Resumo do Pedido</h3>
+                        <div class="d-flex justify-content-between align-items-center border-top pt-3 mt-3">
+                            <span class="h4">Total</span>
+                            <span class="h4 fw-bold text-dark">R$ {{ "%.2f"|format(total_price) }}</span>
+                        </div>
+                        <div class="d-grid gap-2 mt-4">
+    
+                            <button type="submit" class="btn btn-secondary">
+                                <i class="bi bi-arrow-clockwise"></i> Atualizar Carrinho
+                            </button>
+                            
+                            <button type="submit" 
+                                    formaction="{{ url_for('criar_pedido') }}" 
+                                    formmethod="POST" 
+                                    class="btn btn-success btn-lg">
+                                <i class="bi bi-whatsapp"></i> Finalizar Pedido
+                            </button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

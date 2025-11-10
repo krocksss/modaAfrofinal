@@ -1,0 +1,181 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+    
+<div class="container-fluid">
+    <h1 class="mt-4 mb-4">Dashboard de Vendas</h1>
+
+    <div class="row mb-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <form method="GET" action="{{ url_for('admin.index') }}" class="row g-3 align-items-end">
+                        <div class="col-md-5">
+                            <label for="start_date" class="form-label">Data Inicial</label>
+                            <input type="date" class="form-control" id="start_date" name="start_date" value="{{ start_date_str }}">
+                        </div>
+                        <div class="col-md-5">
+                            <label for="end_date" class="form-label">Data Final</label>
+                            <input type="date" class="form-control" id="end_date" name="end_date" value="{{ end_date_str }}">
+                        </div>
+                        <div class="col-md-2 d-grid">
+                            <button type="submit" class="btn btn-primary">Filtrar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Receita Total (R$)</h5>
+                    <p class="card-text fs-2 fw-bold">R$ {{ "%.2f"|format(receita_total) }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Vendas Concluídas</h5>
+                    <p class="card-text fs-2 fw-bold">{{ total_vendas_concluidas }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card text-dark bg-light mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total de Leads (WhatsApp)</h5>
+                    <p class="card-text fs-2 fw-bold">{{ total_leads }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-dark bg-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Taxa de Conversão (Lead &rarr; Venda)</h5>
+                    <p class="card-text fs-2 fw-bold">{{ "%.2f"|format(taxa_conversao) }} %</p>
+                </div>
+            </div>
+        </div>
+
+    </div> <div class="row mb-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Receita (R$) por Dia (Status: "Concluído")
+                </div>
+                <div class="card-body">
+                    {% if dados_receita_linha.data %}
+                        <canvas id="graficoReceitaLinha" height="100"></canvas>
+                    {% else %}
+                        <p class="text-center text-muted">Nenhuma venda concluída no período.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div> <div class="row">
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Status dos Pedidos (Leads) no Período
+                </div>
+                <div class="card-body">
+                    {% if dados_status_pizza.data %}
+                        <canvas id="graficoStatusPizza"></canvas>
+                    {% else %}
+                        <p class="text-center text-muted">Nenhum pedido (lead) encontrado no período.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Top 5 Produtos (Adicionados ao Carrinho - All-Time)
+                </div>
+                <div class="card-body">
+                    {% if dados_produtos_carrinho.data %}
+                        <canvas id="graficoProdutosCarrinho"></canvas>
+                    {% else %}
+                        <p class="text-center text-muted">Nenhum produto foi adicionado ao carrinho ainda.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div> </div> <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // --- GRÁFICO 1: RECEITA (Linha) ---
+        const ctxLinha = document.getElementById('graficoReceitaLinha');
+        if (ctxLinha) {
+            new Chart(ctxLinha, {
+                type: 'line',
+                data: {
+                    labels: {{ dados_receita_linha.labels | tojson }},
+                    datasets: [{
+                        label: 'Receita R$',
+                        data: {{ dados_receita_linha.data | tojson }},
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
+                }
+            });
+        }
+
+        // --- GRÁFICO 2: STATUS (Pizza) ---
+        const ctxStatus = document.getElementById('graficoStatusPizza');
+        if (ctxStatus) {
+            new Chart(ctxStatus, {
+                type: 'pie',
+                data: {
+                    labels: {{ dados_status_pizza.labels | tojson }},
+                    datasets: [{
+                        label: 'Pedidos',
+                        data: {{ dados_status_pizza.data | tojson }},
+                        backgroundColor: [
+                            'rgb(255, 205, 86)', // Pendente (Amarelo)
+                            'rgb(75, 192, 192)', // Concluído (Verde)
+                            'rgb(255, 99, 132)'  // Cancelado (Vermelho)
+                        ]
+                    }]
+                }
+            });
+        }
+
+        // --- GRÁFICO 3: PRODUTOS (Rosquinha) ---
+        const ctxProdutos = document.getElementById('graficoProdutosCarrinho');
+        if (ctxProdutos) {
+            new Chart(ctxProdutos, {
+                type: 'doughnut',
+                data: {
+                    labels: {{ dados_produtos_carrinho.labels | tojson }},
+                    datasets: [{
+                        label: 'Nº de Adições ao Carrinho',
+                        data: {{ dados_produtos_carrinho.data | tojson }},
+                        backgroundColor: [
+                            'rgb(255, 99, 132)',
+                            'rgb(54, 162, 235)',
+                            'rgb(255, 205, 86)',
+                            'rgb(75, 192, 192)',
+                            'rgb(153, 102, 255)'
+                        ]
+                    }]
+                }
+            });
+        }
+    });
+</script>
+
+{% endblock %}

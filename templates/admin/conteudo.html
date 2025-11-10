@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Gerenciar Conteúdo - Admin{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-sidebar">
+        <h2>Administração</h2>
+        <ul>
+            <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('admin_produtos') }}">Produtos</a></li>
+            <li><a href="{{ url_for('admin_conteudo') }}" class="active">Conteúdo do Site</a></li>
+            <li><a href="{{ url_for('index') }}">Ver Site</a></li>
+        </ul>
+    </div>
+    
+    <div class="admin-content">
+        <h1>Gerenciar Conteúdo do Site</h1>
+        
+        <form method="POST" enctype="multipart/form-data" class="form-admin">
+            <h2>Seção Principal (Hero)</h2>
+            
+            <div class="form-group">
+                <label for="titulo_principal">Título Principal:</label>
+                <input type="text" id="titulo_principal" name="titulo_principal" 
+                       value="{{ conteudo.titulo_principal }}">
+            </div>
+            
+            <div class="form-group">
+                <label for="subtitulo">Subtítulo:</label>
+                <input type="text" id="subtitulo" name="subtitulo" 
+                       value="{{ conteudo.subtitulo }}">
+            </div>
+            
+            <div class="form-group">
+                <label for="imagem_hero">Imagem de Fundo (Hero):</label>
+                {% if conteudo.imagem_hero %}
+                <div class="current-image">
+                    <img src="{{ url_for('static', filename='uploads/' + conteudo.imagem_hero) }}" alt="Imagem hero atual">
+                    <p>Imagem atual</p>
+                </div>
+                {% endif %}
+                <input type="file" id="imagem_hero" name="imagem_hero" accept="image/*">
+            </div>
+            
+            <hr>
+            
+            <h2>Seção Sobre</h2>
+            
+            <div class="form-group">
+                <label for="sobre_titulo">Título da Seção Sobre:</label>
+                <input type="text" id="sobre_titulo" name="sobre_titulo" 
+                       value="{{ conteudo.sobre_titulo }}">
+            </div>
+            
+            <div class="form-group">
+                <label for="sobre_texto">Texto da Seção Sobre:</label>
+                <textarea id="sobre_texto" name="sobre_texto" rows="4">{{ conteudo.sobre_texto }}</textarea>
+            </div>
+            
+            <hr>
+            
+            <h2>Configurações</h2>
+            
+            <div class="form-group">
+                <label for="whatsapp">WhatsApp (com DDI e DDD):</label>
+                <input type="text" id="whatsapp" name="whatsapp" 
+                       value="{{ conteudo.whatsapp }}" 
+                       placeholder="5511999999999">
+                <small>Formato: 5511999999999 (DDI + DDD + Número)</small>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

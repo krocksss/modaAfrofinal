@@ -1,0 +1,93 @@
+/* static/css/admin_custom.css */
+
+/* --- Variáveis de Cor (para fácil referência) --- */
+:root {
+    --oba-yellow: #ffcf00;
+    --oba-orange: #ff9810;
+    --oba-brown: #662e06;
+    --oba-dark-brown: #422000;
+}
+
+/* * 1. BARRA DE NAVEGAÇÃO SUPERIOR
+ * (O elemento mais importante para a marca) 
+ */
+.navbar {
+    /* Cor de fundo principal da marca */
+    background: var(--oba-dark-brown) !important; 
+    
+    /* Linha de destaque laranja abaixo do menu */
+    border-bottom: 2px solid var(--oba-orange) !important;
+}
+
+/* * 2. TÍTULO DO PAINEL
+ * (Obá Moda Afro - Dashboard) 
+ */
+.navbar .navbar-brand {
+    color: var(--oba-yellow) !important; /* Cor de destaque */
+    font-weight: 700; /* Mais forte */
+    font-size: 1.5rem; /* Um pouco maior */
+}
+
+/* * 3. LINKS DO MENU SUPERIOR
+ * (Home, Categorias, Produtos, etc.) 
+ */
+.navbar .nav > li > a {
+    color: #f0f0f0 !important; /* Cor de texto clara para ler no fundo escuro */
+    font-weight: 500;
+}
+
+/* Destaque ao passar o mouse */
+.navbar .nav > li > a:hover {
+    background: var(--oba-brown) !important;
+    color: var(--oba-yellow) !important;
+}
+
+/* Destaque para o link "Voltar ao Site" */
+.navbar .nav > li > a[href="/"] {
+     color: var(--oba-yellow) !important;
+     font-weight: 600;
+}
+
+/* * 4. TABELA DE ITENS 
+ * (Cabeçalho: Name, Categories, Price...)
+ */
+.list-table th {
+    color: var(--oba-dark-brown);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+/* * 5. LINKS DENTRO DA TABELA 
+ * (O nome do produto, ex: "brincos")
+ */
+.list-table a {
+    color: var(--oba-orange);
+    font-weight: 600;
+}
+.list-table a:hover {
+    color: var(--oba-brown);
+    text-decoration: underline;
+}
+
+/* * 6. BOTÕES E AÇÕES 
+ * ("Create", "Search")
+ */
+
+/* Botão "Search" e botões principais de salvar */
+.btn-primary {
+     background-color: var(--oba-orange) !important;
+     border-color: var(--oba-brown) !important;
+     color: white !important;
+}
+.btn-primary:hover {
+     background-color: var(--oba-brown) !important;
+}
+
+/* Link "Create" */
+.list-header .btn-default {
+     color: var(--oba-brown) !important;
+     font-weight: 600;
+}
+.list-header .btn-default:hover {
+     color: var(--oba-orange) !important;
+}

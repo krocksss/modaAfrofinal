@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ produto.name }} - Obá Moda Afro{% endblock %}
+
+{% block content %}
+<div class="container product-detail-page">
+    <div class="row">
+        <div class="col-md-6">
+            {% if produto.image %}
+                <img src="{{ url_for('static', filename='uploads/' + produto.image) }}" alt="{{ produto.name }}" class="img-fluid product-image">
+            {% else %}
+                <img src="https://via.placeholder.com/500x500?text=Sem+Imagem" alt="{{ produto.name }}" class="img-fluid product-image">
+            {% endif %}
+        </div>
+        
+        <div class="col-md-6">
+            <h1>{{ produto.name }}</h1>
+            
+            {% if produto.is_on_sale %}
+                <span class="text-muted text-decoration-line-through">
+                    R$ {{ "%.2f"|format(produto.price) }}
+                </span>
+                <span class="h3 fw-bold text-danger ms-2">
+                    R$ {{ "%.2f"|format(produto.current_price) }}
+                </span>
+            {% else %}
+                <span class="h3 fw-bold text-dark">
+                    R$ {{ "%.2f"|format(produto.current_price) }}
+                </span>
+                    {% endif %}
+
+            <div class="mb-3">
+                {% if produto.categories %}
+                <span class="text-muted">Categoria:</span>
+                <a href="{{ url_for('categoria_produtos', slug=produto.categories[0].slug) }}" class="text-decoration-none fw-bold">{{ produto.categories[0].name }}</a>
+                {% endif %}
+            </div>
+
+            <div class="descricao-detalhe">
+                {{ produto.description | safe }}
+            </div>
+
+            <hr>
+
+            {% if produto.total_stock > 0 %}
+            <form action="{{ url_for('adicionar_carrinho', produto_id=produto.id) }}" method="POST">
+                
+                <div class="row">
+                    <div class="form-group mb-3 col-md-8">
+                        <label for="variation-select" class="form-label fw-bold">Selecione o Tamanho:</label>
+                        <select class="form-select" id="variation-select" name="variation_id" required>
+                            <option value="" disabled selected>Escolha um tamanho</option>
+                            {% for var in produto.variations %}
+                                {% if var.stock > 0 %}
+                                    <option value="{{ var.id }}" data-stock="{{ var.stock }}">
+                                        {{ var.size }} ({{ var.stock }} em estoque)
+                                    </option>
+                                {% else %}
+                                    <option value="{{ var.id }}" disabled>
+                                        {{ var.size }} (Esgotado)
+                                    </option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3 col-md-4">
+                        <label for="quantity-input" class="form-label fw-bold">Quantidade:</label>
+                        <input type="number" class="form-control" id="quantity-input" name="quantity" value="1" min="1" max="1" required disabled>
+                    </div>
+                </div>
+                
+                <p id="stock-info" class="text-muted"></p>
+
+                <button type="submit" class="btn btn-primary btn-lg w-100" id="add-to-cart-btn" disabled>
+                    Adicionar ao Carrinho
+                </button>
+            </form>
+            {% else %}
+                <p class="sem-estoque fs-4">Produto indisponível no momento.</p>
+            {% endif %}
+        </div>
+    </div>
+</div> 
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // ... (Script sem alterações) ...
+    const select = document.getElementById('variation-select');
+    const stockInfo = document.getElementById('stock-info');
+    const quantityInput = document.getElementById('quantity-input');
+    const addToCartBtn = document.getElementById('add-to-cart-btn');
+    
+    if (select) {
+        select.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const stock = selectedOption.getAttribute('data-stock');
+            
+            if (stock) {
+                quantityInput.disabled = false;
+                quantityInput.max = stock;
+                if (parseInt(quantityInput.value) > stock) {
+                    quantityInput.value = stock;
+                }
+                addToCartBtn.disabled = false;
+                stockInfo.textContent = `Estoque disponível: ${stock} unidades`;
+            } else {
+                quantityInput.disabled = true;
+                addToCartBtn.disabled = true;
+                stockInfo.textContent = '';
+            }
+        });
+    }
+});
+</script>
+
+{% endblock %}

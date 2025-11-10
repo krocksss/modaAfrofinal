@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="container py-4 section-circular-categories">
+    <div class="d-flex flex-row flex-nowrap justify-content-center align-items-center text-center">
+        {% for cat in circular_categories_1 %}
+            {% if cat.category and cat.category.slug %}
+                <a href="{{ url_for('categoria_produtos', slug=cat.category.slug) }}" class="circular-category-item d-flex align-items-center text-decoration-none mx-3">
+            {% else %}
+                <a href="#" class="circular-category-item d-flex align-items-center text-decoration-none mx-3">
+            {% endif %}
+                    <img src="{{ url_for('static', filename='uploads/' + cat.image_url) }}" alt="{{ cat.name }}" class="rounded-circle shadow-sm">
+                    <span class="ms-2 fw-bold">{{ cat.name }}</span>
+                </a>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="container mb-4">
+    <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            {% for banner in banners %}
+                <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="{{ loop.index0 }}" class="{{ 'active' if loop.first }}" aria-current="{{ 'true' if loop.first }}" aria-label="Slide {{ loop.index }}"></button>
+            {% endfor %}
+        </div>
+        <div class="carousel-inner">
+            {% for banner in banners %}
+            <div class="carousel-item {{ 'active' if loop.first }}">
+                
+                {% set final_link = '#' %} 
+                {% if banner.product %}
+                    {% set final_link = url_for('produto_detalhe', slug=banner.product.slug) %}
+                {% elif banner.link_url %}
+                    {% set final_link = banner.link_url %}
+                {% endif %}
+
+                <a href="{{ final_link }}"> 
+                    <img src="{{ url_for('static', filename='uploads/' + banner.image_url_desktop) }}" class="d-none d-md-block w-100" alt="{{ banner.title }}">
+                    <img src="{{ url_for('static', filename='uploads/' + (banner.image_url_mobile or banner.image_url_desktop)) }}" class="d-block d-md-none w-100" alt="{{ banner.title }}">
+                </a>
+                
+                {% if banner.title %}
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>{{ banner.title }}</h5>
+                    <p>{{ banner.subtitle }}</p>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Próimo</span>
+        </button>
+    </div>
+</section>
+
+{% for section in product_sections %}
+<section class="container mb-5">
+    <h2 class="text-center mb-4 section-title">{{ section.title }}</h2>
+    <div class="product-section-carousel">
+        <div id="carousel-section-{{ section.id }}" class="carousel slide">
+            <div class="carousel-inner">
+                {% for product in section.products %}
+                {% set active_class = 'active' if loop.first else '' %}
+                
+                <div class="carousel-item {{ active_class }}">
+                    <div class="card product-card h-100 border-0">
+                        <a href="{{ url_for('produto_detalhe', slug=product.slug) }}">
+                            {% if product.image %}
+                            <img src="{{ url_for('static', filename='uploads/' + product.image) }}" class="card-img-top product-image-fixed-height" alt="{{ product.name }}">
+                            {% else %}
+                            <img src="https://via.placeholder.com/300x300?text=Sem+Imagem" class="card-img-top product-image-fixed-height" alt="{{ product.name }}">
+                            {% endif %}
+                        </a>
+                        <div class="card-body text-center">
+                            <h5 class="card-title fs-6">
+                                <a href="{{ url_for('produto_detalhe', slug=product.slug) }}" class="text-decoration-none text-dark">{{ product.name }}</a>
+                            </h5>
+                            <p class="card-text fw-bold">R$ {{ "%.2f"|format(product.price)|replace('.', ',') }}</p>
+                            <a href="{{ url_for('produto_detalhe', slug=product.slug) }}" class="btn btn-primary btn-sm">Ver Opções</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            </div>
+    </div>
+</section>
+{% endfor %}
+
+<section class="container py-4 section-circular-categories">
+    <div class="d-flex flex-row flex-nowrap justify-content-center align-items-center text-center">
+        {% for cat in circular_categories_2 %}
+            {% if cat.category and cat.category.slug %}
+                <a href="{{ url_for('categoria_produtos', slug=cat.category.slug) }}" class="circular-category-item d-flex align-items-center text-decoration-none mx-3">
+            {% else %}
+                <a href="#" class="circular-category-item d-flex align-items-center text-decoration-none mx-3">
+            {% endif %}
+                    <img src="{{ url_for('static', filename='uploads/' + cat.image_url) }}" alt="{{ cat.name }}" class="rounded-circle shadow-sm">
+                    <span class="ms-2 fw-bold">{{ cat.name }}</span>
+                </a>
+        {% endfor %}
+    </div>
+</section>
+
+{% if about_section %}
+<section class="container my-5 py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+            <h2 class="section-title mb-3">{{ about_section.title }}</h2>
+            <div class="lead">
+                {{ about_section.content | safe }}
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

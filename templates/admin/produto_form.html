@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ 'Editar' if produto else 'Novo' }} Produto - Admin{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-sidebar">
+        <h2>Administração</h2>
+        <ul>
+            <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('admin_produtos') }}" class="active">Produtos</a></li>
+            <li><a href="{{ url_for('admin_conteudo') }}">Conteúdo do Site</a></li>
+            <li><a href="{{ url_for('index') }}">Ver Site</a></li>
+        </ul>
+    </div>
+    
+    <div class="admin-content">
+        <h1>{{ 'Editar' if produto else 'Novo' }} Produto</h1>
+        
+        <form method="POST" enctype="multipart/form-data" class="form-admin">
+            <div class="form-group">
+                <label for="name">Nome do Produto:</label>
+                <input type="text" id="name" name="name" required 
+                       value="{{ produto.name if produto else '' }}">
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Descrição:</label>
+                <textarea id="description" name="description" rows="4">{{ produto.description if produto else '' }}</textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="price">Preço (R$):</label>
+                    <input type="number" id="price" name="price" step="0.01" required 
+                           value="{{ produto.price if produto else '' }}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Variações (Tamanho e Estoque):</label>
+                <div id="variation-container">
+                    {% if produto and produto.variations %}
+                        {% for var in produto.variations %}
+                        <div class="variation-row">
+                            <input type="text" name="variation-size[]" placeholder="Tamanho (Ex: P, M, 38)" value="{{ var.size }}" required>
+                            <input type="number" name="variation-stock[]" placeholder="Estoque" value="{{ var.stock }}" min="0" required>
+                            <button type="button" class="btn btn-danger btn-remove-variation">Remover</button>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <button type="button" id="btn-add-variation" class="btn btn-secondary">Adicionar Variação</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="image">Imagem do Produto:</label>
+                {% if produto and produto.image %}
+                <div class="current-image">
+                    <img src="{{ url_for('static', filename='uploads/' + produto.image) }}" alt="Imagem atual">
+                    <p>Imagem atual: {{ produto.image }}</p>
+                </div>
+                {% endif %}
+                <input type="file" id="image" name="image" accept="image/*">
+            </div>
+            
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="active" {{ 'checked' if not produto or produto.active else '' }}>
+                    Produto Ativo
+                </label>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <a href="{{ url_for('admin_produtos') }}" class="btn">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<template id="variation-template">
+    <div class="variation-row">
+        <input type="text" name="variation-size[]" placeholder="Tamanho (Ex: P, M, 38)" required>
+        <input type="number" name="variation-stock[]" placeholder="Estoque" min="0" required>
+        <button type="button" class="btn btn-danger btn-remove-variation">Remover</button>
+    </div>
+</template>
+
+<style>
+    /* Estilos para o formulário de variação */
+    .variation-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    .variation-row input[type="text"] { width: 40%; }
+    .variation-row input[type="number"] { width: 30%; }
+    .btn-remove-variation { padding: 5px 10px; }
+    #btn-add-variation { margin-top: 10px; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('variation-container');
+    const addButton = document.getElementById('btn-add-variation');
+    const template = document.getElementById('variation-template');
+
+    addButton.addEventListener('click', function() {
+        const newRow = template.content.cloneNode(true);
+        container.appendChild(newRow);
+    });
+
+    container.addEventListener('click', function(e) {
+        if (e.target.classList.contains('btn-remove-variation')) {
+            e.target.closest('.variation-row').remove();
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Produtos - Loja Virtual{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-4 section-title">Nossos Produtos</h1>
+    
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for produto in produtos %}
+        <div class="col">
+            <div class="card product-card h-100 border-0">
+                <a href="{{ url_for('produto_detalhe', slug=produto.slug) }}">
+                    {% if produto.image %}
+                    <img src="{{ url_for('static', filename='uploads/' + produto.image) }}" class="card-img-top product-image-fixed-height" alt="{{ produto.name }}">
+                    {% else %}
+                    <img src="https://via.placeholder.com/300x300?text=Sem+Imagem" class="card-img-top product-image-fixed-height" alt="{{ product.name }}">
+                    {% endif %}
+                </a>
+                <div class="card-body text-center">
+                    <h5 class="card-title fs-6">
+                        <a href="{{ url_for('produto_detalhe', slug=produto.slug) }}" class="text-decoration-none text-dark">{{ produto.name }}</a>
+                    </h5>
+                    <p class="card-text fw-bold">R$ {{ "%.2f"|format(produto.price)|replace('.', ',') }}</p>
+                    
+                    {% if produto.total_stock > 0 %}
+                        <a href="{{ url_for('produto_detalhe', slug=produto.slug) }}" class="btn btn-primary btn-sm">
+                            Ver Opções
+                        </a>
+                    {% else %}
+                        <p class="text-muted small">Produto indisponível</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

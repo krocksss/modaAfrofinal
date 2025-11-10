@@ -1,0 +1,438 @@
+/* static/css/style.css */
+
+/* Paleta de Cores Obá Moda Afro:
+Amarelo: #ffcf00
+Laranja: #ff9810
+Marrom:  #662e06
+Marrom Escuro: #422000
+*/
+
+:root {
+    --oba-yellow: #ffcf00;
+    --oba-orange: #ff9810;
+    --oba-brown: #662e06;
+    --oba-dark-brown: #422000;
+    --oba-text: #333;
+
+    /* Sobrescrevendo o Bootstrap (Opcional, mas bom) */
+    --bs-primary: var(--oba-brown);
+    --bs-secondary: var(--oba-orange);
+    --bs-dark: var(--oba-dark-brown);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--oba-text);
+}
+
+/* ======================= */
+/* HEADER                  */
+/* ======================= */
+.navbar-brand {
+    font-weight: 700;
+    color: var(--oba-dark-brown);
+}
+
+.navbar-nav .nav-link {
+    font-weight: 500;
+    color: var(--oba-text);
+    transition: color 0.2s;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--oba-orange);
+}
+
+/* ======================= */
+/* SEÇÃO BOLINHAS (SEPHORA)  */
+/* ======================= */
+.section-circular-categories {
+    /* Permite scroll horizontal em telas pequenas */
+    overflow-x: auto;
+    /* Esconde a barra de scroll */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+}
+
+.section-circular-categories::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+}
+
+.section-circular-categories .circular-category-item {
+    color: var(--oba-dark-brown);
+    min-width: 120px; /* Garante espaço no scroll */
+}
+
+.section-circular-categories .circular-category-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border: 2px solid var(--oba-orange);
+    transition: transform 0.3s;
+}
+
+.section-circular-categories .circular-category-item:hover img {
+    transform: scale(1.1);
+}
+
+.section-circular-categories .circular-category-item span {
+    white-space: nowrap; /* Impede que o texto quebre a linha */
+}
+
+/* ======================= */
+/* TÍTULOS DE SEÇÃO       */
+/* ======================= */
+.section-title {
+    color: var(--oba-dark-brown);
+    font-weight: 700;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+/* Linha decorativa abaixo do título */
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background-color: var(--oba-orange);
+    border-radius: 2px;
+}
+
+/* ======================= */
+/* CARD DE PRODUTO GERAL   */
+/* ======================= */
+.product-card {
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.product-card .card-title {
+    color: var(--oba-text);
+    font-size: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-card .card-text {
+    color: var(--oba-dark-brown);
+    font-size: 1.1rem;
+}
+
+.product-card .btn-primary {
+    background-color: var(--oba-orange);
+    border-color: var(--oba-orange);
+    font-weight: 600;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.product-card .btn-primary:hover {
+    background-color: var(--oba-brown);
+    border-color: var(--oba-brown);
+}
+
+/* ======================= */
+/* FOOTER                  */
+/* ======================= */
+.footer-oba {
+    background-color: var(--oba-dark-brown);
+}
+
+.footer-oba h5 {
+    color: var(--oba-yellow);
+    font-weight: 700;
+}
+
+.footer-oba .nav-link {
+    font-size: 0.9rem;
+    padding: 0.2rem 0; /* Ajusta o padding dos links do footer */
+}
+
+.footer-oba .nav-link:hover {
+    color: var(--oba-yellow) !important;
+}
+
+.footer-oba .text-white-50 {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+
+/* ======================= */
+/* CARROSSEL DE PRODUTOS   */
+/* (Ajustes para Multi-Itens e Setas) */
+/* ======================= */
+
+/* Ajusta a altura da imagem e como ela se encaixa */
+.product-image-fixed-height {
+    height: 300px; /* Defina a altura desejada aqui */
+    object-fit: cover; /* Faz a imagem cobrir a área sem distorcer */
+    width: 100%;
+}
+
+/* REGRAS DE MULTI-ITEM ATIVAS */
+.product-section-carousel .carousel-inner {
+    display: flex; /* Permite múltiplos itens lado a lado */
+}
+
+.product-section-carousel .carousel-item {
+    /* Remove o display:none padrão do Bootstrap */
+    display: block;
+
+    /* Define a largura base para mobile (1 item visível por padrão, ajustado abaixo) */
+    flex: 0 0 100%;
+    margin-right: 0; /* Remove margem padrão */
+    transition: transform 0.6s ease-in-out;
+    padding: 0 10px; /* Adiciona um pequeno espaço entre os cards */
+}
+
+/* --- Controle de Itens Visíveis --- */
+
+/* Mobile (Menor que 768px): 2 itens visíveis */
+@media (max-width: 767.98px) {
+    .product-section-carousel .carousel-item {
+        flex-basis: 50%; /* 2 itens (100% / 2) */
+    }
+    /* Ajuste para centralizar quando só tem 1 item no mobile */
+     .product-section-carousel .carousel-item:first-child:nth-last-child(1) {
+       margin-left: 25%;
+    }
+}
+
+/* Tablet (768px até 991.98px): 3 itens visíveis */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .product-section-carousel .carousel-item {
+        flex-basis: 33.3333%; /* 3 itens (100% / 3) */
+    }
+}
+
+/* Desktop (992px ou maior): 4 itens visíveis */
+@media (min-width: 992px) {
+    .product-section-carousel .carousel-item {
+        flex-basis: 25%; /* 4 itens (100% / 4) */
+    }
+}
+/* FIM DAS REGRAS DE MULTI-ITEM */
+
+
+/* --- Posicionamento das Setas --- */
+.product-section-carousel {
+    position: relative; /* Container relativo para as setas absolutas */
+    padding: 0 40px; /* Adiciona espaço nas laterais para as setas não ficarem coladas */
+}
+
+.product-section-carousel .carousel-control-prev,
+.product-section-carousel .carousel-control-next {
+    width: 5%; /* Largura da área clicável da seta */
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 5px; /* Bordas arredondadas (opcional) */
+    top: 50%; /* Alinha verticalmente ao centro */
+    transform: translateY(-50%);
+    height: 50px; /* Altura da seta */
+    opacity: 0.7; /* Opacidade inicial */
+    transition: opacity 0.2s;
+    position: absolute; /* Garante posicionamento absoluto */
+}
+
+.product-section-carousel .carousel-control-prev:hover,
+.product-section-carousel .carousel-control-next:hover {
+    opacity: 1; /* Opacidade total ao passar o mouse */
+}
+
+/* Ajusta a posição horizontal das setas */
+.product-section-carousel .carousel-control-prev {
+    left: 10px; /* Posição da seta esquerda (dentro do padding) */
+}
+.product-section-carousel .carousel-control-next {
+    right: 10px; /* Posição da seta direita (dentro do padding) */
+}
+
+/* Ajusta o ícone da seta */
+.product-section-carousel .carousel-control-prev-icon,
+.product-section-carousel .carousel-control-next-icon {
+    background-size: 60%; /* Tamanho do ícone da seta */
+    background-color: transparent; /* Remove o fundo preto padrão do ícone */
+}
+
+/* Ajuste das setas em telas pequenas */
+@media (max-width: 575.98px) {
+    .product-section-carousel {
+        padding: 0 15px; /* Reduz padding em telas pequenas */
+    }
+    .product-section-carousel .carousel-control-prev,
+    .product-section-carousel .carousel-control-next {
+         width: 8%;
+         height: 40px;
+    }
+     .product-section-carousel .carousel-control-prev {
+        left: 0px;
+    }
+    .product-section-carousel .carousel-control-next {
+        right: 0px;
+    }
+}
+
+/* ================================================== */
+/* === AJUSTE PARA CENTRALIZAR NAVBAR (NOVO CÓDIGO) === */
+/* ================================================== */
+
+/* Aplicar apenas em telas grandes (desktop), onde a navbar é expandida */
+@media (min-width: 992px) { /* 992px é o breakpoint 'lg' do Bootstrap */
+
+    /* 1. Torna o container da navbar o 'contexto' para o posicionamento */
+    .navbar > .container {
+        position: relative;
+    }
+    
+    /* 2. Remove a capacidade do 'bloco de links' de crescer.
+          Isso é necessário para que a 'ul' possa ser posicionada
+          corretamente de forma absoluta. */
+    .navbar .navbar-collapse {
+        flex-grow: 0 !important; 
+    }
+
+    /* 3. Posiciona a lista de links (ul) absolutamente no centro */
+    .navbar .navbar-nav {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+
+        /* Sobrescreve o 'mx-auto' do Bootstrap, que não é mais necessário */
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    
+    /* ================================================== */
+    /* === 4. (NOVO) AUMENTA O ESPAÇAMENTO DOS LINKS === */
+    /* ================================================== */
+    .navbar .navbar-nav .nav-link {
+        padding-left: 1.5rem;  /* Padrão do Bootstrap é 1rem */
+        padding-right: 1.5rem; /* Padrão do Bootstrap é 1rem */
+    }
+}
+
+/* ================================================== */
+/* === PÁGINA DE DETALHE DO PRODUTO (NOVO) === */
+/* ================================================== */
+
+.product-detail-page {
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+.product-image {
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.preco-detalhe {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--oba-dark-brown); /* <-- Alterado */
+}
+.descricao-detalhe {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-top: 20px;
+    color: var(--oba-text); /* <-- Alterado */
+}
+#stock-info {
+    margin-top: -10px;
+    margin-bottom: 15px;
+}
+body.login-body {
+    background-color: #f8f9fa; /* Um cinza bem claro da paleta do Bootstrap */
+}
+
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center; /* Centraliza verticalmente */
+}
+
+.login-card {
+    border: none;
+    border-radius: 10px;
+    /* Adiciona a cor da marca como uma borda no topo */
+    border-top: 5px solid var(--oba-orange); 
+}
+
+.login-title {
+    color: var(--oba-dark-brown); /* Cor do seu CSS */
+    font-weight: 700;
+}
+
+/* Botão de login personalizado */
+.btn-login {
+    background-color: var(--oba-orange); /* Cor do seu CSS */
+    border-color: var(--oba-orange); /* Cor do seu CSS */
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.btn-login:hover {
+    background-color: var(--oba-brown); /* Cor do seu CSS */
+    border-color: var(--oba-brown); /* Cor do seu CSS */
+    color: white;
+}
+/* ================================================== */
+/* === AJUSTE CARROSSEL BANNER (HOME) === */
+/* ================================================== */
+
+/* 1. Este é o container que segura o carrossel */
+#bannerCarousel {
+    /* * Respeita o seu pedido de 900px, mas 'max-width' 
+     * permite que ele diminua em telas menores (responsivo).
+     */
+    max-width: 900px;
+    
+    /* Centraliza o carrossel na página se a tela for maior que 900px */
+    margin-left: auto;
+    margin-right: auto;
+    
+    /* Adiciona uma aparência de "cartão" */
+    border-radius: 12px;
+    overflow: hidden; /* Essencial para o border-radius funcionar na imagem */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* 2. Este é o "slide" individual (o <div> que contém a <img>) */
+#bannerCarousel .carousel-item {
+    /* * Altura para telas pequenas (Mobile). 
+     * 420px é muito alto para um celular. Vamos usar 350px.
+     */
+    height: 350px; 
+}
+
+/* 3. A imagem DENTRO do slide */
+#bannerCarousel .carousel-item img {
+    width: 100%;
+    height: 100%; /* Faz a imagem ter a altura do .carousel-item */
+    
+    /* * A MÁGICA: Isso impede a imagem de achatar ou esticar.
+     * Ela vai "cobrir" o espaço, cortando o excesso 
+     * (igual a uma foto de capa de perfil).
+     */
+    object-fit: cover; 
+    
+    /* Garante que o corte seja centralizado */
+    object-position: center center; 
+}
+
+/* 4. Mudar para a altura de 420px em telas maiores */
+/* 'md' (768px) é o breakpoint do Bootstrap onde suas imagens trocam */
+@media (min-width: 768px) {
+    #bannerCarousel .carousel-item {
+        /* A altura que você pediu para telas de tablet/desktop */
+        height: 420px; 
+    }
+}
