@@ -6,6 +6,7 @@ from flask_ckeditor import CKEditor
 import math
 import os
 import datetime
+from flask import send_from_directory
 from models import Order
 from sqlalchemy import not_
 from urllib.parse import quote_plus as url_escape 
@@ -14,13 +15,20 @@ from flask_login import login_user, logout_user, current_user
 WHATSAPP_NUMBER = '+5515997479931' 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-db_path = os.path.join(basedir, 'oba_afro.db')
-upload_folder = os.path.join(basedir, 'static', 'uploads')
+IS_PRODUCTION = os.environ.get('RENDER')
+if IS_PRODUCTION: 
+    persistent_data_path = '/var/data' 
+    db_path = os.path.join(persistent_data_path, 'oba_afro.db') 
+    upload_folder = os.path.join(persistent_data_path, 'uploads') 
+else: 
+    db_path = os.path.join(basedir, 'oba_afro.db') 
+    upload_folder = os.path.join(basedir, 'static', 'uploads')
 
 def create_app():
     app = Flask(__name__)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+    app.config['UPLOAD_FOLDER'] = upload_folder
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = 'uma-chave-secreta-muito-forte' 
     app.config['UPLOAD_FOLDER'] = upload_folder
@@ -373,6 +381,10 @@ def create_app():
         logout_user() # <-- Função do Flask-Login que limpa a sessão
         flash('Você saiu da sua conta.', 'success')
         return redirect(url_for('login'))
+    
+    @app.route('/uploads/<path:filename>')
+    def uploaded_file(filename): 
+        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
     # --- Fim da Função create_app ---
     return app
