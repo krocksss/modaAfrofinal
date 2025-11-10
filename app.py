@@ -35,8 +35,7 @@ def create_app():
     app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
     app.config['FLASK_ADMIN_EXTRA_CSS'] = ['css/admin_custom.css']
 
-    if not os.path.exists(upload_folder):
-        os.makedirs(upload_folder)
+    
 
     db.init_app(app)
     login_manager.init_app(app)
